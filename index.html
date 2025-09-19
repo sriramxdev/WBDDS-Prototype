@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Water-Quality Reading Submission</title>
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary:#2563eb;
+    --bg:#f1f5f9;
+    --card:#ffffff;
+    --radius:12px;
+  }
+  * { box-sizing:border-box; font-family:'Inter',sans-serif; }
+  body {
+    background:var(--bg);
+    padding:0;
+    margin:0;
+    display:flex;
+    justify-content:center;
+    min-height:100vh;
+    align-items:center;
+  }
+  .card {
+    background:var(--card);
+    padding:2rem;
+    border-radius:var(--radius);
+    width:100%;
+    max-width:400px;
+    box-shadow:0 6px 18px rgba(0,0,0,0.1);
+  }
+  h1 {
+    text-align:center;
+    margin-bottom:1.5rem;
+    color:#0f172a;
+    font-size:1.5rem;
+  }
+  label {
+    display:block;
+    margin-top:1rem;
+    font-weight:600;
+    color:#334155;
+  }
+  input {
+    width:100%;
+    padding:0.5rem 0.75rem;
+    margin-top:0.25rem;
+    border:1px solid #cbd5e1;
+    border-radius:var(--radius);
+    font-size:1rem;
+  }
+  button {
+    width:100%;
+    margin-top:1.5rem;
+    padding:0.75rem;
+    background:var(--primary);
+    color:#fff;
+    border:none;
+    border-radius:var(--radius);
+    font-weight:600;
+    cursor:pointer;
+    transition:background 0.2s;
+  }
+  button:hover { background:#1d4ed8; }
+  #status {
+    text-align:center;
+    margin-top:1rem;
+    font-weight:600;
+  }
+</style>
+</head>
+<body>
+
+<div class="card">
+  <h1>Submit Water Reading</h1>
+  <form id="readingForm">
+    <label>pH <input type="number" step="0.01" id="ph" required></label>
+    <label>Turbidity (NTU) <input type="number" step="0.01" id="turbidity" required></label>
+    <label>Conductivity (µS/cm) <input type="number" step="0.01" id="conductivity" required></label>
+    <label>Coliform (cfu/100ml) <input type="number" step="0.01" id="coliform" required></label>
+    <label>Rainfall (mm) <input type="number" step="0.01" id="rainfall" required></label>
+    <label>Temperature (°C) <input type="number" step="0.01" id="temp" required></label>
+    <label>Weekly Patients <input type="number" step="1" id="patients" required></label>
+    <button type="submit">Submit Reading</button>
+  </form>
+  <p id="status"></p>
+</div>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js"></script>
+<script>
+  // 🔑 Replace with your actual Firebase config
+  const firebaseConfig = {
+    apiKey: "YOUR_API_KEY",
+    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+    projectId: "YOUR_PROJECT_ID",
+    storageBucket: "YOUR_PROJECT_ID.appspot.com",
+    messagingSenderId: "YOUR_SENDER_ID",
+    appId: "YOUR_APP_ID"
+  };
+
+  const app = firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+
+  const form = document.getElementById('readingForm');
+  const status = document.getElementById('status');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    try {
+      await db.collection("readings").add({
+        pH: parseFloat(ph.value),
+        turbidity: parseFloat(turbidity.value),
+        conductivity: parseFloat(conductivity.value),
+        coliform: parseFloat(coliform.value),
+        rainfall: parseFloat(rainfall.value),
+        temp: parseFloat(temp.value),
+        patients: parseInt(patients.value),
+        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      status.style.color = "green";
+      status.textContent = "✅ Reading saved!";
+      form.reset();
+    } catch (err) {
+      status.style.color = "red";
+      status.textContent = "❌ Error: " + err;
+    }
+  });
+</script>
+
+</body>
+</html>
