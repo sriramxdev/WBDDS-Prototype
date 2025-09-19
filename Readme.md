@@ -15,22 +15,8 @@ This project combines a **machine learning model** (hosted on [Hugging Face Spac
    - Every **5 seconds**, the model (running on Hugging Face Spaces) fetches the latest data from Firebase.  
    - It produces a **risk score** and classifies the entry as **LOW / MEDIUM / HIGH** risk.  
 
-3. **Alerts**  
-   - Results are written back to Firebase.  
-   - If risk ≥ MEDIUM, the system triggers **real-time notifications** via Firebase Cloud Messaging (FCM).  
-
 4. **Visualization**  
    - The GitHub-hosted dashboard displays submitted data and prediction results.  
    - Updates are automatic — no manual refresh required.  
 
 ---
-
-## 🏗️ System Architecture
-```mermaid
-flowchart LR
-    A[User Form (GitHub Pages)] -->|Submits data| B[Firebase Database]
-    B -->|Data Fetch (5s)| C[AI Model - Hugging Face Spaces]
-    C -->|Predictions| B
-    B --> D[Notifications (FCM)]
-    B --> E[Web Dashboard (GitHub Pages)]
-```
