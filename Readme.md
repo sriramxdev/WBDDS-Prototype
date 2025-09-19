@@ -33,3 +33,4 @@ flowchart LR
     C -->|Predictions| B
     B --> D[Notifications (FCM)]
     B --> E[Web Dashboard (GitHub Pages)]
+```
